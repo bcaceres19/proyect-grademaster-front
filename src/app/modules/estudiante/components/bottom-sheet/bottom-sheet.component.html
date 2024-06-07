@@ -1,0 +1,6 @@
+<mat-nav-list>
+    <a mat-list-item (click)="onEvent($event)" *ngFor="let texto of textoBotones">
+        <span matListItemTitle>{{texto}}</span>
+        <span matLine>Click para ver las notas de la materia {{texto}}</span>
+    </a>
+</mat-nav-list>

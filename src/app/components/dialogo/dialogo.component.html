@@ -1,0 +1,144 @@
+<div class="container">
+  <div class="row d-flex flex-wrap text-center h-100">
+    <h1 mat-dialog-title>{{ data.titulo }}</h1>
+    <div mat-dialog-content class="flex-grow-1">
+      <mat-form-field
+        appearance="fill"
+        class="flex-fill mr-3"
+        *ngIf="data.tipoVentana === 'MATERIAS'"
+      >
+        <mat-label>Cantidad de horarios:</mat-label>
+        <input matInput type="number" [(ngModel)]="cantidad" />
+        <mat-error *ngIf="cantidad">{{ errorCantidad }}</mat-error>
+      </mat-form-field>
+      <div class="row mt-3" *ngIf="data.tipoVentana === 'DOCENTE'">
+        <div class="col-12">
+          <mat-tab-group>
+            <mat-tab label="Disponibles">
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                class="mat-elevation-z8 w-100"
+              >
+                <ng-container matColumnDef="nombre">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Nombre Materia
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    {{ element.nombre }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Acciones
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <div class="d-flex justify-content-center">
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="
+                          addMateria(dataSourceAgreg, dataSource, element)
+                        "
+                      >
+                        Agregar
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="nombreColumnas"></tr>
+                <tr mat-row *matRowDef="let row; columns: nombreColumnas"></tr>
+              </table>
+              <mat-paginator
+                #paginadorAceptadas="matPaginator"
+                [pageSizeOptions]="[10, 20]"
+                showFirstLastButtons
+              ></mat-paginator>
+            </mat-tab>
+            <mat-tab label="Agregados">
+              <table
+                mat-table
+                [dataSource]="dataSourceAgreg"
+                class="mat-elevation-z8 w-100"
+              >
+                <ng-container matColumnDef="nombre">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Nombre Materia
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    {{ element.nombre }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="nrCreditos">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Numero Creditos
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    {{ element.ncreditos }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Acciones
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <div class="d-flex justify-content-center">
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="
+                          addMateria(dataSource, dataSourceAgreg, element)
+                        "
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="nombreColumnas"></tr>
+                <tr mat-row *matRowDef="let row; columns: nombreColumnas"></tr>
+              </table>
+              <mat-paginator
+                #paginadorAceptadas="matPaginator"
+                [pageSizeOptions]="[10, 20]"
+                showFirstLastButtons
+              ></mat-paginator>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+      <div class="row mt-3" *ngIf="data.tipoVentana === 'NOTAS_ESTUDIANTE'">
+        <div class="col-12">
+          <form [formGroup]="formNotas">
+              <table
+              mat-table
+              [dataSource]="dataSourceNota"
+              class="mat-elevation-z8 w-100"
+            >
+              <ng-container *ngFor="let nombre of columnasNotas" [matColumnDef]="nombre">
+                <th mat-header-cell *matHeaderCellDef class="text-center">
+                  {{nombre}}
+                </th>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                  <mat-form-field appearance="fill" class="w-100 p-2">
+                    <input matInput type="number"  [formControlName]="nombre"/>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnasNotas"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnasNotas"></tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div mat-dialog-actions class="d-flex justify-content-center">
+      <button mat-flat-button color="warn" (click)="notaTotal()" *ngIf="this.data.tipoVentana === 'NOTAS_ESTUDIANTE'">
+        Calcular
+      </button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="onClickOk()">
+        Ok
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<mat-sidenav-container>
+    <mat-sidenav [(opened)]="abrir">
+      <div class="contenedor">
+        <div class="itemEspacio">
+        </div>
+        <div class="imagen">
+          <img src="../../assets/images/acceso-sidenav.png" alt="acceso" class="imgAcceso">
+        </div>
+        <div class="inicio">
+          <a mat-button routerLink=".">Inicio</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="crearEstudiante">Crear Estudiante</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="crearDocente">Crear Docente</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="buscarDocente">Buscar Docente</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="crearCarrera">Crear Carrera</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="crearMateria">Crear Materia</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="crearMateria">Crear Materia</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'DOCENTE'">
+          <a mat-button routerLink="asignarNotas">Asignar Notas</a>
+        </div>
+        <div class="salir">
+          <a mat-button (click)="onSalir()">Salir</a>
+        </div>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div class="contenedorHijo">
+        <div class="parteUno">
+          <button mat-icon-button (click)="cambiarEstado()">
+            <mat-icon class="menu">menu</mat-icon>
+          </button>
+        </div>
+        <div class="parteDos">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>

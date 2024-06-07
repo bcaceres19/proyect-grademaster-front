@@ -1,0 +1,55 @@
+mat-sidenav-container {
+    height: 100vh;
+  }
+  
+  mat-sidenav {
+    height: 100%;
+    width: 250px; /* Ajusta el ancho si es necesario */
+    background-color: #f5f5f5;
+  }
+  
+  .contenedor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px; /* Espaciado interno */
+    gap: 20px; /* Espaciado entre elementos */
+  }
+  
+  .contenedor > .inicio, .salir {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  a {
+    color: #000;
+    font-family: Roboto, sans-serif; /* Usa sans-serif para mejor consistencia */
+    font-size: 18px; /* Ajusta si es necesario */
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .imgAcceso {
+    width: auto;
+    height: 60px; /* Ajusta la altura si es necesario */
+    margin-bottom: 20px; /* Espaciado inferior */
+  }
+  
+  .contenedorHijo {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    height: 100vh;
+  }
+  
+  .parteUno, .parteDos {
+    padding: 20px; 
+  }
+  
+  .menu {
+    font-size: 35px; 
+    height: auto ;
+    width:auto ;
+  }

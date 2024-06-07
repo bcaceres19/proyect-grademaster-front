@@ -1,0 +1,140 @@
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Registro de Estudiantes</h2>
+            <form [formGroup]="formCrearEstudiante" (ngSubmit)="crearEstudiante()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Nombres:</mat-label>
+                                <input matInput type="text" formControlName="nombres">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Apellidos:</mat-label>
+                                <input matInput type="text" formControlName="apellidos">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group d-flex align-items-center">
+                            <div class="col-md-8 text-center">
+                                <mat-form-field appearance="fill" class="w-100 mr-3">
+                                    <mat-label>Codigo Universitario</mat-label>
+                                    <input matInput type="text" formControlName="codigoUniversitario"  [(ngModel)]="codigoEstudiante" >
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <button mat-raised-button type="button" class="btn btn-secondary ml-2" (click)="generarCodigo()" [disabled]="cedula.invalid">Generar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group d-flex align-items-center">
+                            <div class="col-md-8 text-center">
+                                <mat-form-field appearance="fill" class="w-100 mr-3">
+                                    <mat-label>Correo Universitario</mat-label>
+                                    <input matInput type="text" formControlName="correoUniversitario" [(ngModel)]="correoEstudiante">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <button mat-raised-button type="button" class="btn btn-secondary ml-2" (click)="generarCorreo()" [disabled]="nombres.invalid || apellidos.invalid || codigoUniversitario.value === ''">Generar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Correo Personal:</mat-label>
+                                <input matInput type="text" formControlName="correoPersonal">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Cedula:</mat-label>
+                                <input matInput type="text" formControlName="cedula">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Telefono:</mat-label>
+                                <input matInput type="text" formControlName="telefono">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Edad:</mat-label>
+                                <input matInput type="text" formControlName="edad">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="formFile">Selecciona una imagen</label>
+                            <input (change)="subirArchivo($event)" formControlName="imagen" class="form-control" type="file" name="formFile" id="formFile" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Carreras</mat-label>
+                                <mat-select formControlName="carrera">
+                                    <mat-option *ngFor="let carrera of carreras" [value]="carrera.codigoCarrera">{{carrera.nombreCarrera}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Estados</mat-label>
+                                <mat-select formControlName="estado">
+                                    <mat-option *ngFor="let estado of estados" [value]="estado.id">{{estado.nombre}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Generos</mat-label>
+                                <mat-select formControlName="genero">
+                                    <mat-option *ngFor="let genero of generos" [value]="genero.descripcion">{{genero.nombre}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-2 text-center">
+                        <button mat-raised-button [disabled]="formCrearEstudiante.invalid">Registrar</button>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <button mat-raised-button type="button" class="btn btn-secondary">Volver</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

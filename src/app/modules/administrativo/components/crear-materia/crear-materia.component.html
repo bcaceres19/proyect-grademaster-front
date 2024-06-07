@@ -1,0 +1,140 @@
+<div class="container mt-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-8">
+      <h2 class="text-center mb-4">Registro de Materias</h2>
+      <form [formGroup]="formMateria" (ngSubmit)="crearMateria()">
+        <!-- Nombre de la Carrera -->
+        <div class="row mb-3">
+          <div class="col-md-9">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Nombre Materia:</mat-label>
+              <input matInput type="text" formControlName="nombreMateria" />
+              <mat-error *ngIf="nombreMateria.invalid">
+                {{ errorNombreMateria }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <!-- Total de Créditos -->
+          <div class="col-md-3">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Total Creditos:</mat-label>
+              <input
+                matInput
+                type="text"
+                maxlength="2"
+                formControlName="numeroCreditos"
+              />
+              <mat-error *ngIf="numeroCreditos.invalid">
+                {{ errorCantidadCreditos }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Código de la Carrera -->
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Codigo Materia:</mat-label>
+              <input matInput type="text" formControlName="codigoMateria" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Botón Siguiente -->
+        <div class="row justify-content-center mt-4">
+          <div class="col-md-2 text-center">
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              [disabled]="formMateria.invalid"
+              (click)="abrirDialogo()"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla de Horarios (opcional) -->
+        <div class="row mt-3" *ngIf="habilitarFechas">
+          <div class="col-12">
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              class="mat-elevation-z8 w-100"
+              formArrayName="horarios"
+            >
+                <!-- Hora Inicio -->
+                <ng-container matColumnDef="horaInicio" >
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Hora Inicio
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <mat-form-field appearance="fill" class="w-100 p-2" [formGroupName]="element.indice">
+                      <input
+                        matInput
+                        type="time"
+                        formControlName="horaInicio"
+                      />
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <!-- Hora Final -->
+                <ng-container matColumnDef="horaFinal">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Hora Final
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center" [formGroupName]="element.indice">
+                    <mat-form-field appearance="fill" class="w-100 p-2">
+                      <input matInput type="time" formControlName="horaFinal" />
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+                <!-- Acciones -->
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    Acciones
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <div
+                      class="d-flex justify-content-center align-items-center p-2 h-100"
+                    >
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="horarios.controls[element.indice].get('activarBoton')?.value !== true"
+                        (click)="agregarHorario(element.indice)"
+                      >
+                        Agregar
+                      </button>
+                    </div>
+                    <div
+                      class="d-flex justify-content-center align-items-center p-2 h-100"
+                    >
+                      <button mat-raised-button 
+                      color="warn" 
+                      [disabled]="horarios.controls[element.indice].get('activarBoton')?.value !== false"
+                      (click)="quitarHorario(element.indice)">Quitar</button>
+                    </div>
+                  </td>
+                </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="nombreColumnas"></tr>
+              <tr mat-row *matRowDef="let row; columns: nombreColumnas"></tr>
+            </table>
+            <mat-paginator
+              [pageSizeOptions]="[10, 20]"
+              showFirstLastButtons
+            ></mat-paginator>
+          </div>
+        </div>
+        <div class="row justify-content-center mt-4" *ngIf="habilitarFechas">
+            <div class="col-md-2 text-center">
+              <button mat-raised-button>Crear</button>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

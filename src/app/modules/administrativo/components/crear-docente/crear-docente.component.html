@@ -1,0 +1,168 @@
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Registro de Docentes</h2>
+            <form [formGroup]="formCrearDocente" (ngSubmit)="crearDocente()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Nombres:</mat-label>
+                                <input matInput type="text" formControlName="nombres">
+                                <mat-error *ngIf="nombres.invalid">
+                                    {{ mensajesError[0] }}
+                                  </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Apellidos:</mat-label>
+                                <input matInput type="text" formControlName="apellidos">
+                                <mat-error *ngIf="apellidos.invalid">
+                                    {{ mensajesError[1] }}
+                                  </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group d-flex align-items-center">
+                            <div class="col-md-8 text-center">
+                                <mat-form-field appearance="fill" class="w-100 mr-3">
+                                    <mat-label>Codigo Docente</mat-label>
+                                    <input matInput type="text" formControlName="codigoDocente">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <button mat-raised-button type="button" class="btn btn-secondary ml-2" (click)="generarCodigo()" [disabled]="cedula.invalid">Generar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group d-flex align-items-center">
+                            <div class="col-md-8 text-center">
+                                <mat-form-field appearance="fill" class="w-100 mr-3">
+                                    <mat-label>Correo Docente</mat-label>
+                                    <input matInput type="text" formControlName="correoDocente">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <button mat-raised-button type="button" class="btn btn-secondary ml-2" (click)="generarCorreo()" [disabled]="nombres.invalid || apellidos.invalid || codigoDocente.value === ''">Generar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Correo Personal:</mat-label>
+                                <input matInput type="text" formControlName="correoPersonal">
+                                <mat-error *ngIf="correoPersonal.errors && correoPersonal.errors['required']">
+                                    {{ mensajesError[2] }}
+                                </mat-error>
+                                <mat-error *ngIf="correoPersonal.errors && correoPersonal.errors['email']">
+                                    {{ mensajesError[8] }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Cedula:</mat-label>
+                                <input matInput type="text" formControlName="cedula">
+                                <mat-error *ngIf="cedula.errors?.['required']">
+                                    {{ mensajesError[3] }}
+                                </mat-error>
+                                <mat-error *ngIf="cedula.errors && cedula.errors?.['maxlength']">
+                                    {{ mensajesError[9] }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Telefono:</mat-label>
+                                <input matInput type="text" formControlName="telefono">
+                                <mat-error *ngIf="telefono.errors?.['required']">
+                                    {{ mensajesError[4] }}
+                                </mat-error>
+                                <mat-error *ngIf="telefono.errors && telefono.errors?.['maxlength']">
+                                    {{ mensajesError[10] }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Edad:</mat-label>
+                                <input matInput type="text" formControlName="edad">
+                                <mat-error *ngIf="edad.errors?.['required']">
+                                    {{ mensajesError[5] }}
+                                </mat-error>
+                                <mat-error *ngIf="edad.errors && edad.errors?.['maxlength']">
+                                    {{ mensajesError[11] }}
+                                </mat-error>
+                                <mat-error *ngIf="edad.errors && edad.errors?.['minlength']">
+                                    {{ mensajesError[12] }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="formFile">Selecciona una imagen</label>
+                            <input (change)="subirArchivo($event)" formControlName="imagen" class="form-control" type="file" name="formFile" id="formFile" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Estados</mat-label>
+                                <mat-select formControlName="estado">
+                                    <mat-option *ngFor="let estado of estados" [value]="estado.id">{{estado.nombre}}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="estado.invalid">
+                                    {{ mensajesError[6] }}
+                                </mat-error>
+                            </mat-form-field>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Generos</mat-label>
+                                <mat-select formControlName="genero">
+                                    <mat-option *ngFor="let genero of generos" [value]="genero.descripcion">{{genero.nombre}}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="genero.invalid">
+                                    {{ mensajesError[7] }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-2 text-center">
+                        <button mat-raised-button [disabled]="formCrearDocente.invalid">Registrar</button>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <button mat-raised-button type="button" class="btn btn-secondary" (click)="volver()">Volver</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

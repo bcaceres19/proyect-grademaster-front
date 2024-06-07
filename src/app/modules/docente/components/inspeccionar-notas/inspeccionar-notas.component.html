@@ -1,0 +1,103 @@
+<div class="container my-4">
+  <div class="row mb-4">
+    <div class="col text-start">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <button mat-button [matMenuTriggerFor]="menu">Materias</button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let materia of materiasAsignadas" (click)="seleccionarMater(materia.codigo!)">{{materia.nombre}}</button>
+          </mat-menu>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!agregraNotas">
+    <form [formGroup]="formNotas" class="w-100">
+      <div class="row mb-3">
+        <div class="col text-start">
+          <button mat-raised-button color="primary" (click)="guardarNotas()">Siguiente</button>
+        </div>
+        <div class="col text-end">
+          <button mat-raised-button color="primary" (click)="addNota()">Agregar Notas</button>
+        </div>
+      </div>
+      <div class="col-12">
+        <cdk-virtual-scroll-viewport class="viewport" [itemSize]="dataSourceCrearNotas.data.length">
+          <table mat-table [dataSource]="dataSourceCrearNotas" class="mat-elevation-z8 w-100" formArrayName="notas">
+            <ng-container matColumnDef="codigo">
+              <th mat-header-cell *matHeaderCellDef class="text-center">Codigo</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <mat-form-field appearance="fill" class="w-100 p-2" [formGroupName]="element.indice">
+                  <input matInput type="text" formControlName="codigo" />
+                </mat-form-field>
+              </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="porcentaje">
+              <th mat-header-cell *matHeaderCellDef class="text-center">Porcentaje</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <mat-form-field appearance="fill" class="w-100 p-2" [formGroupName]="element.indice">
+                  <input matInput type="number" formControlName="porcentaje" />
+                </mat-form-field>
+              </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+              <td mat-cell *matCellDef="let element" class="text-center" [formGroupName]="element.indice">
+                <div class="d-flex justify-content-center">
+                  <button mat-raised-button color="primary" (click)="eliminarNota(element.indice)">Eliminar</button>
+                </div>
+              </td>
+            </ng-container>
+  
+            <tr mat-header-row *matHeaderRowDef="nombreColumnasCrearNotas"></tr>
+            <tr mat-row *matRowDef="let row; columns: nombreColumnasCrearNotas"></tr>
+          </table>
+        </cdk-virtual-scroll-viewport>
+      </div>
+    </form>
+  </div>
+
+  <div class="row" *ngIf="agregraNotas">
+    <div class="col-12">
+      <cdk-virtual-scroll-viewport class="viewport" [itemSize]="dataSource.data.length">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100">
+          <ng-container matColumnDef="codigo">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Codigo</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              {{ element.codigoEstudiante }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="nombres">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Nombres</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              {{ element.nombres }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="apellidos">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Apellidos</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              {{ element.apellidos }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              <div class="d-flex justify-content-center">
+                <button mat-raised-button color="primary" (click)="abrirDialogo(element.codigoEstudiante)">Agregar Notas</button>
+              </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="nombreColumnas"></tr>
+          <tr mat-row *matRowDef="let row; columns: nombreColumnas"></tr>
+        </table>
+      </cdk-virtual-scroll-viewport>
+    </div>
+  </div>
+</div>
