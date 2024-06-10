@@ -1,31 +1,30 @@
 import { Component } from '@angular/core';
-import { Docente } from '../../interface/docente.interface';
+import { Estudiante } from '../../interface/estudiante.interface';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DocenteService } from '../../services/docente.service';
+import { EstudianteService } from '../../services/estudiante.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { SemestreService } from '../../services/semestre.service';
+import { Semestre } from '../../interface/semestre.interface';
 import { RespuestaGeneral } from 'src/app/interface/respuesta-general.interface';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
-import { MatTableDataSource } from '@angular/material/table';
-import { Materia } from '../../interface/materia.interface';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { DialogoComponent } from 'src/app/components/dialogo/dialogo.component';
-import { AsignarMaterias } from '../../interface/asignar-materias.interface';
-import { Semestre } from '../../interface/semestre.interface';
-import { SemestreService } from '../../services/semestre.service';
-import { Router } from '@angular/router';
 import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
+import { Materia } from '../../interface/materia.interface';
+import { DialogoComponent } from 'src/app/components/dialogo/dialogo.component';
+import { AsignarMateriasEstudiante } from '../../interface/asignar-materias-estudiante.interface';
 import { MensajesOk } from 'src/app/shared/mensajesOk.constants';
 
 @Component({
-  selector: 'app-buscar-docente',
-  templateUrl: './buscar-docente.component.html',
-  styleUrls: ['./buscar-docente.component.css']
+  selector: 'app-buscar-estudiante',
+  templateUrl: './buscar-estudiante.component.html',
+  styleUrls: ['./buscar-estudiante.component.css']
 })
-export class BuscarDocenteComponent {
+export class BuscarEstudianteComponent {
+
+  public listEstudiantes:Estudiante[] = []
 
   public mensajeError = MensajesErrorConstantes;
 
-  public listDocentes:Docente[] = []
 
   public semestre?:Semestre;
 
@@ -33,15 +32,15 @@ export class BuscarDocenteComponent {
     'nombre': new FormControl('')
   })
 
-  constructor(private docenteService:DocenteService,
+  constructor(private estudianteService:EstudianteService,
     private spinner:NgxSpinnerService,
     private matDialog:MatDialog,
     private semestreService:SemestreService
   ){}
-
+  
   ngOnInit(): void {
     this.spinner.show()
-    this.getAllDocentesActivos()
+    this.getAllEstudiantesActivos()
     this.semestreService.getUltimoSemestre().subscribe({
       next: (v:RespuestaGeneral) => {
         this.semestre = v.data as Semestre;  
@@ -56,11 +55,11 @@ export class BuscarDocenteComponent {
     });
   }
 
-  public getAllDocentesActivos(){
+  public getAllEstudiantesActivos(){
     this.spinner.show()
-    this.docenteService.buscarDocentesAtivosSistema().subscribe({
+    this.estudianteService.getAllEstudiantesActivos().subscribe({
       next: (v:RespuestaGeneral) => {
-        this.listDocentes = v.data as Docente[]
+        this.listEstudiantes = v.data as Estudiante[]
       },
       error: (e) => {
         console.error(e);
@@ -72,6 +71,7 @@ export class BuscarDocenteComponent {
       }
     })
   }
+
   private generarMensaje(mensaje:string, icono:SweetAlertIcon){
     Swal.fire({
       text: mensaje,
@@ -80,11 +80,11 @@ export class BuscarDocenteComponent {
     })
   }
 
-  public buscarDocenteNombre(){
+  public buscarEstudiantesNombre(){
     this.spinner.show()
-    this.docenteService.buscarDocenteNombre(this.campoBusqueda.get("nombre")?.value!).subscribe({
+    this.estudianteService.getAllEstudiantesActivosNombre(this.campoBusqueda.get("nombre")?.value!).subscribe({
       next: (v:RespuestaGeneral) => {
-        this.listDocentes = v.data as Docente[]
+        this.listEstudiantes = v.data as Estudiante[]
       },
       error: (e) => {
         console.error(e);
@@ -97,29 +97,31 @@ export class BuscarDocenteComponent {
     })
   }
 
-  public abrirDialogo(codigo:string){
+  public abrirDialogo(objEstudiante:Estudiante){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true
     dialogConfig.data = {
       titulo: "Asignar Materias",
-      tipoVentana: "DOCENTE",
-      data: codigo,
+      tipoVentana: "ESTUDIANTE",
+      data: {
+        codigoCarrera:objEstudiante.codigoCarreraEntityFk?.codigoCarrera,
+        codigoEstudiante:objEstudiante.codigoEstudiante
+      },
       allowOutsideClick: false
     }
     this.matDialog.open(DialogoComponent,dialogConfig).beforeClosed().subscribe((resultado) => {
       const materias:Materia[] = resultado.dataAsig as Materia[]
       if(materias.length !== 0 && resultado.nuevo){
-        const docente:Docente = {
-          codigoDocente: codigo
+        const estudiante:Estudiante = {
+          codigoEstudiante: objEstudiante.codigoEstudiante
         }
-        const docenteMateras:AsignarMaterias = {
-          docenteDto: docente,
-          semestreDto: this.semestre,
+        const estudianteMaterias:AsignarMateriasEstudiante = {
+          estudianteDto: estudiante,
           materiasAsignar: materias,
           materiasNoAsignadas: resultado.dataNoAsig
         }
         this.spinner.show()
-        this.docenteService.asignarMateriasDocente(docenteMateras).subscribe({
+        this.estudianteService.asignarMateriasEstudiante(estudianteMaterias).subscribe({
           next: (v:RespuestaGeneral) => {},
           error: (e) => {
             console.error(e);
@@ -131,8 +133,11 @@ export class BuscarDocenteComponent {
             this.generarMensaje(MensajesOk.MENSAJE_CONFIRMACION_ASIGNACION_MATERIAS, "success")
           }
         })
+      }else if(materias.length === 0){
+        this.generarMensaje(this.mensajeError.ERROR_CANTIDAD_MATERIAS_ESTUDIANTE,"error");
       }
     })
   }
+
 
 }

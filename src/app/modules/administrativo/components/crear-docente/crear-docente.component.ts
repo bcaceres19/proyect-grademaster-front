@@ -10,6 +10,8 @@ import { DocenteService } from '../../services/docente.service';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
 import { Router } from '@angular/router';
+import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
+import { MensajesOk } from 'src/app/shared/mensajesOk.constants';
 
 @Component({
   selector: 'app-crear-docente',
@@ -24,22 +26,6 @@ export class CrearDocenteComponent {
   estados:Estado[] = [];
 
   generos:Genero[] = [];
-
-  public mensajesError:string[] = [
-    "Se requiere un nombre",
-    "Se requiere al menos un apellido",
-    "Se requiere el correo personal del docente",
-    "Se requiere la cedula",
-    "Se requiere el telefono",
-    "Se requiere la edad",
-    "Se requiere colocar un estado",
-    "Se requiere colocar el genero",
-    "Se requiere que se coloque un formato de email valido",
-    "La cedula no puede tener mas  de 10 caracteres",
-    "El telefono no puede tener mas de 10 digitos",
-    "La edad no puede tener mas de dos digitos",
-    "La edad de tener al menos un digitos"
-  ];
 
   public file:File[] = [];
 
@@ -56,6 +42,8 @@ export class CrearDocenteComponent {
     'cedula': new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]),
     'imagen': new FormControl('', Validators.required)
   });
+
+  public mensajesError = MensajesErrorConstantes;
 
   get cedula(){
     return this.formCrearDocente.get('cedula') as FormControl;
@@ -126,6 +114,7 @@ export class CrearDocenteComponent {
       error: (e) => {
         console.log(e);
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       },
       complete: () => {
         this.spinner.hide()
@@ -152,16 +141,18 @@ export class CrearDocenteComponent {
               error: (e) => {
                 console.log(e);
                 this.spinner.hide()
+                this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
               },
               complete: () => {
                 this.spinner.hide()
-                this.generarMensaje("Se creo correctamente el docente, ¿Quieres crear otro?", "success")
+                this.generarMensajeCrear(MensajesOk.MENSAJE_CONFIRMACION_DOCENTE, "success")
               }
           })
         },
         error: (e) => {
           console.log(e);
           this.spinner.hide();
+          this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
         }
       })
     }
@@ -169,16 +160,19 @@ export class CrearDocenteComponent {
 
   public generarCodigo(){
     this.spinner.show()
-    console.log(this.generarDocente());
     this.docenteService.generarCodigo(this.generarDocente()).subscribe({
       next: (v) => {
-        this.codigoDocente?.setValue(v.data + "");
-        console.log(this.nombres.invalid);
-        console.log(this.apellidos.invalid);
-        console.log(this.codigoDocente.value === '');
+        const contenido:string = String(v.data);
+        if(contenido === 'ERROR'){
+          this.spinner.hide()
+          this.generarMensaje(this.mensajesError.ERROR_CODIGO_EXISTENTE, "error");
+        }else{
+          this.codigoDocente?.setValue(v.data + "");
+        }
       },error: (e) => {
         console.log(e)
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       }, complete: () => {
         this.spinner.hide()
       }
@@ -190,10 +184,10 @@ export class CrearDocenteComponent {
     this.docenteService.generarCorreo(this.generarDocente()).subscribe({
       next: (v) => {
         this.correoDocente?.setValue(v.data+"");
-      
       },error: (e) => {
         console.log(e)
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       }, complete: () => {
         this.spinner.hide()
       }
@@ -225,7 +219,7 @@ export class CrearDocenteComponent {
   }
 
 
-  private generarMensaje(mensaje:string, icono:SweetAlertIcon){
+  private generarMensajeCrear(mensaje:string, icono:SweetAlertIcon){
     Swal.fire({
       text: mensaje,
       icon: icono,
@@ -237,6 +231,15 @@ export class CrearDocenteComponent {
       }else if(resultado.dismiss?.toString() === 'cancel'){
         this.route.navigate(["/administrativos"])
       }
+    });
+  }
+
+  private generarMensaje(mensaje:string, icono:SweetAlertIcon){
+    Swal.fire({
+      text: mensaje,
+      icon: icono,
+      showCancelButton: false,
+      allowOutsideClick: false
     });
   }
 

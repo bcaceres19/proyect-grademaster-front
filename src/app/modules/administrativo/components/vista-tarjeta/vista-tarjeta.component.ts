@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Estudiante } from '../../interface/estudiante.interface';
 
 @Component({
   selector: 'app-vista-tarjeta',
@@ -34,9 +35,19 @@ export class VistaTarjetaComponent {
   @Input()
   public textoBotonUno?:string;
 
+  @Input()
+  public objetoEstudiante?:Estudiante;
+
+  @Input()
+  public tipoTarjeta?:string;
 
   @Output() itemModal = new EventEmitter<string>();
   emitirModal(){
     this.itemModal.emit(this.codigo!);
+  }
+
+  @Output() objetoModal = new EventEmitter<Estudiante>();
+  emitirObjeto(){
+    this.objetoModal.emit(this.objetoEstudiante);
   }
 }

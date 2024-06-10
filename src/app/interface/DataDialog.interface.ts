@@ -2,6 +2,6 @@ export interface DataDilaog{
 
     titulo:string;
     tipoVentana:string;
-    data:Object;
+    data:any;
     listData:Object[];
 }

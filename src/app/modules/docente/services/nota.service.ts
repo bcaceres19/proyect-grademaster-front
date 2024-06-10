@@ -5,6 +5,7 @@ import { RespuestaGeneral } from 'src/app/interface/respuesta-general.interface'
 import { ApiHttpConstants } from 'src/app/shared/api.constants';
 import { CrearNota } from '../interface/crearNota.interface';
 import { NotaMateria } from '../interface/notaMateria.interface';
+import { GenerarNuevoCorte } from '../interface/generarNuevoCorte.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -46,4 +47,23 @@ export class NotaService {
     )
   }
 
+  public ultimoCorteMateria(codigoMateria:string):Observable<RespuestaGeneral>{
+    return this.http.get<RespuestaGeneral>(
+      `${ApiHttpConstants.API_BASE}${ApiHttpConstants.PORT_DOCENTE}${ApiHttpConstants.URL_DOCENTE}${ApiHttpConstants.NOTAS_DOCENTE}${ApiHttpConstants.ULTIMO_CORTE_MATERIA}`,
+      {
+        params:{
+          codigoMateria:codigoMateria
+        }
+      }
+    )
+  }
+
+  public generarNuevoCorte(generarNuevoCorte:GenerarNuevoCorte):Observable<RespuestaGeneral>{
+    return this.http.post<RespuestaGeneral>(
+      `${ApiHttpConstants.API_BASE}${ApiHttpConstants.PORT_DOCENTE}${ApiHttpConstants.URL_DOCENTE}${ApiHttpConstants.NOTAS_DOCENTE}${ApiHttpConstants.GENERAR_NUEVO_CORTE}`,
+      generarNuevoCorte
+    )
+  }
+
 }
+

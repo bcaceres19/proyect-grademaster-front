@@ -49,4 +49,15 @@ export class DocenteService {
     )
   }
 
+  public buscarDocenteNombre(nombreDocente:string):Observable<RespuestaGeneral>{
+    return this.http.get<RespuestaGeneral>(
+      `${ApiHttpConstants.API_BASE}${ApiHttpConstants.PORT_DOCENTE}${ApiHttpConstants.URL_DOCENTE}${ApiHttpConstants.BUSCAR_DOCENTE_NOMBRE}`,
+        {
+          params: {
+            nombre: nombreDocente
+          }
+        }
+    )
+  }
+
 }

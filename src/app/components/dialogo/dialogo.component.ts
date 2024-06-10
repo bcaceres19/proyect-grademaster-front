@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DataDilaog } from 'src/app/interface/DataDialog.interface';
+import { EstudianteMateria } from 'src/app/interface/estudianteMateria.interface';
 import { MateriaDocente } from 'src/app/interface/materiaDocente.interface';
 import { RespuestaGeneral } from 'src/app/interface/respuesta-general.interface';
 import { Materia } from 'src/app/modules/administrativo/interface/materia.interface';
@@ -33,6 +34,8 @@ export class DialogoComponent {
 
   public formNotas = new FormGroup({})
 
+  public nuevosDatos:boolean = false;
+
   public nombreColumnas:string[] = [
     'nombre',
     'acciones'
@@ -48,6 +51,7 @@ export class DialogoComponent {
   ){}
 
   ngOnInit(): void {
+    this.spinner.show()
     if(this.data.tipoVentana === "DOCENTE"){
       this.transversalesService.getMateriasDocente(String(this.data.data)).subscribe({
         next: (v:RespuestaGeneral) =>{
@@ -57,11 +61,12 @@ export class DialogoComponent {
         },
         error: (e) =>{
           console.error(e);
-        }
+          this.spinner.hide()
+        },
+        complete: () => this.spinner.hide()
       })
     }else if(this.data.tipoVentana === "NOTAS_ESTUDIANTE"){
-      this.spinner.show()
-      this.transversalesService.allNotasMateriaDocente(String(this.data.listData[0]), String(this.data.listData[1]), String(this.data.data)).subscribe({
+      this.transversalesService.allNotasMateriaDocente(String(this.data.listData[0]), String(this.data.listData[1]), String(this.data.data), String(this.data.listData[2])).subscribe({
         next:(v:RespuestaGeneral) =>{
           let nombre:string ="";
           const notas:NotasGet[] = v.data as NotasGet[];
@@ -88,6 +93,21 @@ export class DialogoComponent {
           this.spinner.hide()
         }
       })
+    }else if(this.data.tipoVentana === "ESTUDIANTE"){
+      this.transversalesService.getMateriasEstudiante(String(this.data.data['codigoCarrera']),String(this.data.data['codigoEstudiante'])).subscribe({
+        next: (v:RespuestaGeneral) => {
+          const materiaEstudiante:EstudianteMateria = v.data as EstudianteMateria;
+          this.dataSource = new MatTableDataSource<Materia>(materiaEstudiante.materiasNoAsignadas);
+          this.dataSourceAgreg = new MatTableDataSource<Materia>(materiaEstudiante.materiasAsignadas);
+        },
+        error: (e) => {
+          console.error(e);
+          this.spinner.hide()
+        },
+        complete: () => this.spinner.hide()
+      })
+    }else{
+      this.spinner.hide()
     }
   }
 
@@ -114,14 +134,17 @@ export class DialogoComponent {
       text: mensaje,
       icon: icono,
       showCancelButton: false
-    }).then((resultado) => {
-    
-    });
+    })
   }
 
   public onClickOk(): any{
-    if(this.data.tipoVentana === "DOCENTE"){
-      return this.dataSourceAgreg.data
+    if(this.data.tipoVentana === "DOCENTE" || this.data.tipoVentana === "ESTUDIANTE"){
+      let objeto = {
+        nuevo: this.nuevosDatos,
+        dataAsig: this.dataSourceAgreg.data,
+        dataNoAsig: this.dataSource.data
+      }
+      return objeto
     }else if(this.data.tipoVentana === "NOTAS_ESTUDIANTE"){
       let notas:Notas[] = []
       for(const columna of this.columnasNotas){
@@ -136,7 +159,8 @@ export class DialogoComponent {
         }
       }
       return notas;
-    }else{
+    }
+    else{
       return this.cantidad;
     }
   }
@@ -149,5 +173,6 @@ export class DialogoComponent {
     const deleteData = dataDelete.data.filter(materiaD => materiaD.codigo !== materiaAct.codigo);
     dataAdd.data =data;
     dataDelete.data = deleteData;
+    this.nuevosDatos = true;
   }
 }

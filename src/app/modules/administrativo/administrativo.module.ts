@@ -20,6 +20,7 @@ import { CrearMateriaComponent } from './components/crear-materia/crear-materia.
 import { MatDialogModule } from '@angular/material/dialog';
 import { BuscarDocenteComponent } from './components/buscar-docente/buscar-docente.component';
 import { VistaTarjetaComponent } from './components/vista-tarjeta/vista-tarjeta.component';
+import { BuscarEstudianteComponent } from './components/buscar-estudiante/buscar-estudiante.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { VistaTarjetaComponent } from './components/vista-tarjeta/vista-tarjeta.
         CrearCarreraComponent,
         CrearMateriaComponent,
         BuscarDocenteComponent,
-        VistaTarjetaComponent
+        VistaTarjetaComponent,
+        BuscarEstudianteComponent
     ],
     imports: [
         CommonModule,

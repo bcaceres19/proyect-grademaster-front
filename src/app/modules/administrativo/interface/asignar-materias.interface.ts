@@ -7,5 +7,5 @@ export interface AsignarMaterias{
     semestreDto?:Semestre,
     docenteDto?:Docente,
     materiasAsignar?:Materia[]
-
+    materiasNoAsignadas?:Materia[]
 }

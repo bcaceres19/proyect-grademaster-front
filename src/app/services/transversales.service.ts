@@ -72,14 +72,27 @@ export class TransversalesService {
     )
   }
 
-  public allNotasMateriaDocente(codigoDocente:string, codigoMateria:string,codigoEstudiante:string):Observable<RespuestaGeneral>{
+  public getMateriasEstudiante(codigoCarrera:string, codigoEstudiante:string):Observable<RespuestaGeneral>{
+    return this.http.get<RespuestaGeneral>(
+      `${ApiHttpConstants.API_BASE}${ApiHttpConstants.PORT_ESTUDIANTE}${ApiHttpConstants.URL_ESTUDIANTE}${ApiHttpConstants.ALL_MATERIAS_ESTUDIANTE_CARRERA}`,
+      {
+        params:{
+          "codigoCarrera":codigoCarrera,
+          "codigoEstudiante": codigoEstudiante
+        }
+      }
+    )
+  }
+
+  public allNotasMateriaDocente(codigoDocente:string, codigoMateria:string,codigoEstudiante:string, numeroCorte:string):Observable<RespuestaGeneral>{
     return this.http.get<RespuestaGeneral>(
       `${ApiHttpConstants.API_BASE}${ApiHttpConstants.PORT_DOCENTE}${ApiHttpConstants.URL_DOCENTE}${ApiHttpConstants.NOTAS_DOCENTE}${ApiHttpConstants.ALL_NOTAS_MATERIA_DOCENTE}`,
       {
         params:{
           codigoDocente: codigoDocente,
           codigoMateria: codigoMateria,
-          codigoEstudiante: codigoEstudiante
+          codigoEstudiante: codigoEstudiante,
+          numeroCorte: numeroCorte
         }
       }
     )

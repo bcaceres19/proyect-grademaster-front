@@ -7,8 +7,11 @@
       <p class="card-text fs-6"><b>Teléfono:</b> {{telefono}}</p>
       <p class="card-text fs-6"><b>Correo Universitario:</b> {{correoUniversitario}}</p>
       <p class="card-text fs-6"><b>Correo Personal:</b> {{correoPersonal}}</p>
-      <div class="mt-auto">
+      <div class="mt-auto" *ngIf="tipoTarjeta !== 'ESTUDIANTE'">
         <button mat-flat-button color="primary" (click)="emitirModal()">{{textoBotonUno}}</button>
+      </div>
+      <div class="mt-auto" *ngIf="tipoTarjeta === 'ESTUDIANTE'">
+        <button mat-flat-button color="primary" (click)="emitirObjeto()">{{textoBotonUno}}</button>
       </div>
     </div>
   </div>

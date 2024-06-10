@@ -9,7 +9,7 @@
               <mat-form-field appearance="fill" class="flex-fill mr-3">
                 <mat-label>Nombre Carrera:</mat-label>
                 <input matInput type="text" formControlName="nombreCarrera">
-                <mat-error *ngIf="nombreCarrera.invalid">{{errorNombreCarrera}}</mat-error>
+                <mat-error *ngIf="nombreCarrera.invalid">{{mensajesError.ERROR_NOMBRE}}</mat-error>
               </mat-form-field>
             </div>
           </div>
@@ -92,7 +92,10 @@
         </div>
         <div class="row justify-content-center mt-4" *ngIf="habilitarMaterias">
           <div class="col-md-2 text-center">
-            <button mat-raised-button>Crear</button>
+            <button mat-raised-button [disabled]="formCarrera.invalid">Registrar</button>
+          </div>
+          <div class="col-md-2 text-center">
+              <button mat-raised-button type="button" class="btn btn-secondary" (click)="volver()">Volver</button>
           </div>
         </div>
       </form>

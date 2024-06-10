@@ -10,7 +10,7 @@
               <mat-label>Nombre Materia:</mat-label>
               <input matInput type="text" formControlName="nombreMateria" />
               <mat-error *ngIf="nombreMateria.invalid">
-                {{ errorNombreMateria }}
+                {{ this.mensajesError.ERROR_NOMBRE }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -25,7 +25,7 @@
                 formControlName="numeroCreditos"
               />
               <mat-error *ngIf="numeroCreditos.invalid">
-                {{ errorCantidadCreditos }}
+                {{ this.mensajesError.ERROR_CANTIDAD_CREDITOS }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -48,7 +48,7 @@
               type="button"
               mat-raised-button
               color="primary"
-              [disabled]="formMateria.invalid"
+              [disabled]="formMateria.invalid || habilitarFechas"
               (click)="abrirDialogo()"
             >
               Siguiente
@@ -103,6 +103,7 @@
                       <button
                         mat-raised-button
                         color="primary"
+                        type="button"
                         [disabled]="horarios.controls[element.indice].get('activarBoton')?.value !== true"
                         (click)="agregarHorario(element.indice)"
                       >
@@ -114,6 +115,7 @@
                     >
                       <button mat-raised-button 
                       color="warn" 
+                      type="button"
                       [disabled]="horarios.controls[element.indice].get('activarBoton')?.value !== false"
                       (click)="quitarHorario(element.indice)">Quitar</button>
                     </div>
@@ -130,9 +132,14 @@
           </div>
         </div>
         <div class="row justify-content-center mt-4" *ngIf="habilitarFechas">
-            <div class="col-md-2 text-center">
-              <button mat-raised-button>Crear</button>
-            </div>
+          <div class="col-md-2 text-center">
+            <button  mat-raised-button
+              color="primary" [disabled]="formMateria.invalid">Crear</button>
+          </div>
+          <div class="col-md-2 text-center">
+              <button  mat-raised-button
+                color="warn" type="button" class="btn btn-secondary" (click)="volver()">Volver</button>
+          </div>
         </div>
       </form>
     </div>

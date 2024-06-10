@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Materia } from '../../interface/materia.interface';
 import { TransversalesService } from 'src/app/services/transversales.service';
@@ -10,6 +10,8 @@ import { CarreraService } from '../../services/carrera.service';
 import { Carrera } from '../../interface/carrera.interface';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
 import { Router } from '@angular/router';
+import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
+import { MensajesOk } from 'src/app/shared/mensajesOk.constants';
 
 @Component({
   selector: 'app-crear-carrera',
@@ -25,6 +27,9 @@ export class CrearCarreraComponent {
     'nombreCarrera': new FormControl('', Validators.required),
     'totalCreditos': new FormControl('')
   })
+
+  @ViewChild(FormGroupDirective) formRef!: FormGroupDirective;
+
 
   get codigoCarrera(){
     return this.formCarrera.get("codigoCarrera") as FormControl;
@@ -59,6 +64,8 @@ export class CrearCarreraComponent {
   public dataSource = new MatTableDataSource<Materia>();
 
   public dataSourceAgreg = new MatTableDataSource<Materia>();
+
+  public mensajesError = MensajesErrorConstantes;
 
 
   @ViewChild(MatSort) sort: MatSort = new MatSort;
@@ -95,14 +102,13 @@ export class CrearCarreraComponent {
     this.generarCodigo();
     this.codigoCarrera?.disable();
     this.sort.sort({id:'codigo',start:'asc', disableClear:true})
-    this.actualizarMensajeError();
   }
 
   public crearCarreras(){
     this.spinner.show()
     if(this.dataSourceAgreg.data && this.dataSourceAgreg.data.length < 3){
       this.spinner.hide()
-      this.generarMensaje("La carrera debe tener al menos 3 o mas materias", "error", false)
+      this.generarMensaje(this.mensajesError.ERROR_CANTIDAD_MATERIAS, "error")
     }else{
       const carrera:Carrera = {
         codigoCarrera: this.codigoCarrera?.value,
@@ -113,12 +119,12 @@ export class CrearCarreraComponent {
         next: (v:RespuestaGeneral) =>{},
         error: (e) => {
             console.error(e);
-            this.generarMensaje("Hubo un error en crear la materia, prueba mas tarde", "error", false)
             this.spinner.hide()
+            this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
         },
         complete: () => {
           this.spinner.hide();
-          this.generarMensaje("Se creo correctamente la carrera", "success", true)
+          this.generarMensajeCrear(MensajesOk.MENSAJE_CONFIRMACION_CARRERA, "success")
         }
       })
     }
@@ -133,8 +139,7 @@ export class CrearCarreraComponent {
         error: (e) =>{
           console.error(e);
           this.spinner.hide();
-          this.generarMensaje("Hubo un error en generar las materias, comunicate con el administrados",
-           "error", false)
+          this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
         },
         complete: () =>{
           this.spinner.hide();
@@ -149,9 +154,8 @@ export class CrearCarreraComponent {
         this.codigoCarrera?.setValue(String(v.data));
       },error: (e) => {
         console.log(e)
-        this.generarMensaje("Hubo un error en generar el codigo, comunicate con el administrados",
-         "error",false)
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       }, complete: () => {
         this.spinner.hide()
       }
@@ -164,22 +168,33 @@ export class CrearCarreraComponent {
     }
   }
 
-  private actualizarMensajeError(){
 
-    this.errorNombreCarrera = this.nombreCarrera.invalid ? "Se requiere un nombre de carrera" : "";
-
-  }
-
-  private generarMensaje(mensaje:string, icono:SweetAlertIcon, pasarPagina:boolean){
+  private generarMensajeCrear(mensaje:string, icono:SweetAlertIcon){
     Swal.fire({
       text: mensaje,
       icon: icono,
-      showCancelButton: false
+      showCancelButton: true,
+      allowOutsideClick: false
     }).then((resultado) => {
-      if(pasarPagina  && (resultado.isConfirmed || resultado.isDismissed)){
+      if(resultado.isConfirmed){
+        this.formRef.resetForm();
+      }else if(resultado.dismiss?.toString() === 'cancel'){
         this.route.navigate(["/administrativos"])
       }
     });
+  }
+
+  private generarMensaje(mensaje:string, icono:SweetAlertIcon){
+    Swal.fire({
+      text: mensaje,
+      icon: icono,
+      showCancelButton: false,
+      allowOutsideClick: false
+    });
+  }
+
+  public volver(){
+    this.route.navigate(["/administrativos"])
   }
 }
 

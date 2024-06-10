@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { CloudinaryService } from '../../services/cloudinary.service';
 import { Carrera } from '../../interface/carrera.interface';
-import { EstadosUsuario } from '../../interface/estados-usuario.interface';
 import { Estudiante } from '../../interface/estudiante.interface';
 import { Estado } from '../../interface/estado.interface';
 import { EstudianteService } from '../../services/estudiante.service';
@@ -10,6 +9,10 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { TransversalesService } from 'src/app/services/transversales.service';
 import { Genero } from 'src/app/interface/genero.interface';
 import { RespuestaGeneralData } from 'src/app/interface/RespuestaDataGeneral.interface';
+import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
+import { Router } from '@angular/router';
+import { MensajesOk } from 'src/app/shared/mensajesOk.constants';
 
 @Component({
   selector: 'app-crear-estudiante',
@@ -26,6 +29,10 @@ export class CrearEstudianteComponent {
 
   public file:File[] = [];
 
+  @ViewChild(FormGroupDirective) formRef!: FormGroupDirective;
+
+  public mensajesError = MensajesErrorConstantes;
+
   public codigoEstudiante:string = "";
 
   public correoEstudiante:string = "";
@@ -33,15 +40,15 @@ export class CrearEstudianteComponent {
   formCrearEstudiante = new FormGroup({
     'nombres': new FormControl('', Validators.required),
     'apellidos': new FormControl('', Validators.required),
-    'codigoUniversitario': new FormControl(''),
-    'edad': new FormControl('', Validators.required),
-    'telefono': new FormControl('', Validators.required),
-    'correoPersonal': new FormControl('', Validators.required),
+    'codigoUniversitario': new FormControl('',[Validators.required,Validators.minLength(1)]),
+    'edad': new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(2)]),
+    'telefono': new FormControl('', [Validators.required, Validators.maxLength(10)]),
+    'correoPersonal': new FormControl('',  [Validators.required, Validators.email]),
     'correoUniversitario': new FormControl(''),
     'genero': new FormControl('', Validators.required),
     'carrera': new FormControl('', Validators.required),
     'estado': new FormControl('', Validators.required),
-    'cedula': new FormControl('', Validators.required),
+    'cedula': new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]),
     'imagen': new FormControl('', Validators.required)
   })
 
@@ -96,7 +103,9 @@ export class CrearEstudianteComponent {
   constructor(private cloudService:CloudinaryService,
      private estudianteService:EstudianteService,
      private spinner:NgxSpinnerService,
-    private transversales:TransversalesService){}
+    private transversales:TransversalesService,
+    private route:Router
+  ){}
 
   ngOnInit(): void {
     this.spinner.show()
@@ -116,6 +125,7 @@ export class CrearEstudianteComponent {
       error: (e) => {
         console.log(e);
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       },
       complete: () => {
         this.spinner.hide()
@@ -146,15 +156,18 @@ export class CrearEstudianteComponent {
               error: (e) => {
                 console.log(e);
                 this.spinner.hide()
+                this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
               },
               complete: () => {
                 this.spinner.hide()
+                this.generarMensajeCrear(MensajesOk.MENSAJE_CONFIRMACION_ESTUDIANTE, "success")
               }
           })
         },
         error: (e) => {
           console.log(e);
           this.spinner.hide();
+          this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
         }
       })
     }
@@ -184,6 +197,35 @@ export class CrearEstudianteComponent {
     }
   }
 
+  private generarMensajeCrear(mensaje:string, icono:SweetAlertIcon){
+    Swal.fire({
+      text: mensaje,
+      icon: icono,
+      showCancelButton: true,
+      allowOutsideClick: false
+    }).then((resultado) => {
+      if(resultado.isConfirmed){
+        this.formRef.resetForm();
+      }else if(resultado.dismiss?.toString() === 'cancel'){
+        this.route.navigate(["/administrativos"])
+      }
+    });
+  }
+
+  private generarMensaje(mensaje:string, icono:SweetAlertIcon){
+    Swal.fire({
+      text: mensaje,
+      icon: icono,
+      showCancelButton: false,
+      allowOutsideClick: false
+    });
+  }
+
+  public volver(){
+    this.route.navigate(["/administrativos"])
+  }
+
+
   generarCodigo(){
     this.spinner.show()
     this.estudianteService.generarCodigo(this.generarEstudiante()).subscribe({
@@ -192,6 +234,7 @@ export class CrearEstudianteComponent {
       },error: (e) => {
         console.log(e)
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       }, complete: () => {
         this.spinner.hide()
       }
@@ -206,6 +249,7 @@ export class CrearEstudianteComponent {
       },error: (e) => {
         console.log(e)
         this.spinner.hide()
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL,"error");
       }, complete: () => {
         this.spinner.hide()
       }

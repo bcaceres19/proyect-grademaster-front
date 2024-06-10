@@ -6,6 +6,7 @@ import { CrearDocenteComponent } from './components/crear-docente/crear-docente.
 import { CrearCarreraComponent } from './components/crear-carrera/crear-carrera.component';
 import { CrearMateriaComponent } from './components/crear-materia/crear-materia.component';
 import { BuscarDocenteComponent } from './components/buscar-docente/buscar-docente.component';
+import { BuscarEstudianteComponent } from './components/buscar-estudiante/buscar-estudiante.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'crearEstudiante',
     component: CrearEstudianteComponent
+  },
+  {
+    path: 'buscarEstudiante',
+    component: BuscarEstudianteComponent
   },
   {
     path: 'crearDocente',

@@ -13,6 +13,9 @@
           <a mat-button routerLink="crearEstudiante">Crear Estudiante</a>
         </div>
         <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
+          <a mat-button routerLink="buscarEstudiante">Buscar Estudiante</a>
+        </div>
+        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
           <a mat-button routerLink="crearDocente">Crear Docente</a>
         </div>
         <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
@@ -20,9 +23,6 @@
         </div>
         <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
           <a mat-button routerLink="crearCarrera">Crear Carrera</a>
-        </div>
-        <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
-          <a mat-button routerLink="crearMateria">Crear Materia</a>
         </div>
         <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
           <a mat-button routerLink="crearMateria">Crear Materia</a>

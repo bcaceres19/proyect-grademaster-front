@@ -1,17 +1,43 @@
 <div class="container my-4">
-  <div class="row mb-4">
-    <div class="col text-start">
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-          <button mat-button [matMenuTriggerFor]="menu">Materias</button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngFor="let materia of materiasAsignadas" (click)="seleccionarMater(materia.codigo!)">{{materia.nombre}}</button>
-          </mat-menu>
-        </li>
-      </ul>
+  <div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col">
+        <div class="d-flex flex-row justify-content-between align-items-center">
+          <form [formGroup]="formSelects" class="d-flex flex-row">
+            <div class="me-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Materias</mat-label>
+                <mat-select formControlName="selectMaterias">
+                  <mat-option *ngFor="let materia of materiasAsignadas" [value]="materia.nombre" (click)="seleccionarMater(materia.codigo)">
+                    {{materia.nombre}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="me-3">
+              <mat-form-field appearance="fill">
+                <mat-label>Cortes</mat-label>
+                <mat-select formControlName="selectCortes">
+                  <mat-option *ngFor="let corte of cortes" [value]="corte" (click)="seleccionarCorte()">
+                    {{corte}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </form>
+          <div class="me-3 flex-grow-1">
+            <p class="mb-0"><strong>Cantidad de créditos:</strong> {{cantidadCreditos}}</p>
+          </div>
+          <div class="me-3 flex-grow-1">
+            <p class="mb-0"><strong>Hora Inicio:</strong> {{horaInicio}}</p>
+          </div>
+          <div class="flex-grow-1">
+            <p class="mb-0"><strong>Hora Fin:</strong> {{horaFin}}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
   <div class="row" *ngIf="!agregraNotas">
     <form [formGroup]="formNotas" class="w-100">
       <div class="row mb-3">

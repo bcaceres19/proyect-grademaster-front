@@ -11,7 +11,7 @@
         <input matInput type="number" [(ngModel)]="cantidad" />
         <mat-error *ngIf="cantidad">{{ errorCantidad }}</mat-error>
       </mat-form-field>
-      <div class="row mt-3" *ngIf="data.tipoVentana === 'DOCENTE'">
+      <div class="row mt-3" *ngIf="data.tipoVentana === 'DOCENTE' || data.tipoVentana === 'ESTUDIANTE'">
         <div class="col-12">
           <mat-tab-group>
             <mat-tab label="Disponibles">
@@ -136,7 +136,7 @@
       <button mat-flat-button color="warn" (click)="notaTotal()" *ngIf="this.data.tipoVentana === 'NOTAS_ESTUDIANTE'">
         Calcular
       </button>
-      <button mat-flat-button color="warn" [mat-dialog-close]="onClickOk()">
+      <button mat-flat-button color="primary" [mat-dialog-close]="onClickOk()" [disabled]="data.tipoVentana === 'DOCENTE' && dataSourceAgreg.data.length === 0">
         Ok
       </button>
     </div>

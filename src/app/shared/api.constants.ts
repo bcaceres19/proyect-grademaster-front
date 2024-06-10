@@ -49,7 +49,13 @@ export class ApiHttpConstants{
     public static readonly ALL_NOTAS_MATERIA_DOCENTE = "/allNotasMateriaDocente"
     public static readonly CONSEGUIR_NOTA_ESTUDIANTE = "/conseguirNotaEstudiante"
     public static readonly CREAR_NOTAS_ESTUDIANTE = "/crearNotasEstudiante"
-
+    public static readonly BUSCAR_DOCENTE_NOMBRE = "/bucar-docente-nombre"
+    public static readonly ALL_ESTUDIANTES = "/all-estudiantes-activos"
+    public static readonly ALL_ESTUDIANTES_NOMBRE = "/all-estudiantes-activos-nombre"
+    public static readonly ALL_MATERIAS_ESTUDIANTE_CARRERA = "/all-materias-estudiante-carrera"
+    public static readonly ASIGNAR_MATERIAS_ESTUDIANTE = "/asignar-materias"
+    public static readonly ULTIMO_CORTE_MATERIA = "/ultimo-corte-materia"
+    public static readonly GENERAR_NUEVO_CORTE = "/generar-nuevo-corte"
 
 
 }
