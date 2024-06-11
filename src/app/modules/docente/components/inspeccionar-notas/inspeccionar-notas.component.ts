@@ -191,12 +191,11 @@ export class InspeccionarNotasComponent {
     .pipe(
       switchMap(() => this.getAllMateriasDocente()),
       switchMap(() => this.checkNotasExistencia()),
-      switchMap(existenNotas => existenNotas ? this.getAllEstudiantesDocenteMateria() : []),
+      switchMap(() => this.getAllEstudiantesDocenteMateria()),
       switchMap(() => this.getUltimoCorteMateria())
     )
     .subscribe({
       complete: () => {
-        this.agregraNotas = true;
         this.spinner.hide();
       },
       error: (e) => {
@@ -243,7 +242,9 @@ export class InspeccionarNotasComponent {
   
   checkNotasExistencia() {
     return this.notaService.existenciaNotas(this.codigoDocente, this.codigoMateriaSelec).pipe(
-      map((v: RespuestaGeneral) => v.data as Boolean),
+      map((v: RespuestaGeneral) => {
+        this.agregraNotas = Boolean(v.data)
+      }),
       catchError(e => {
         console.error(e);
         return [false];
@@ -255,6 +256,8 @@ export class InspeccionarNotasComponent {
     return this.docenteService.getAllEstudiantesDocenteMateria(this.codigoDocente, this.codigoMateriaSelec).pipe(
       tap((v: RespuestaGeneral) => {
         this.dataSource = new MatTableDataSource<Estudiante>(v.data as Estudiante[]);
+        console.log(this.dataSource.data);
+        
       }),
       catchError(e => {
         console.error(e);
