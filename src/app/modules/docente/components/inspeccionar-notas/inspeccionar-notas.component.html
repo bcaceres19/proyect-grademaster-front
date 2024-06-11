@@ -38,7 +38,7 @@
       </div>
     </div>
   </div>
-  <div class="row" *ngIf="!agregraNotas">
+  <div class="row" *ngIf="agregraNotas">
     <form [formGroup]="formNotas" class="w-100">
       <div class="row mb-3">
         <div class="col text-start">
@@ -86,7 +86,7 @@
     </form>
   </div>
 
-  <div class="row" *ngIf="agregraNotas">
+  <div class="row" *ngIf="!agregraNotas">
     <div class="col-12">
       <cdk-virtual-scroll-viewport class="viewport" [itemSize]="dataSource.data.length">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100">

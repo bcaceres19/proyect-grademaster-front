@@ -174,7 +174,12 @@ export class InspeccionarNotasComponent {
           'success',
           true,false
         );
-        this.getAllEstudiantesMateria();
+        this.getUltimoCorteMateria().subscribe({
+          complete:() => {
+            this.getAllEstudiantesMateria();
+          },
+          error:(e) => {}
+        })
       },
     });
   }
@@ -191,11 +196,14 @@ export class InspeccionarNotasComponent {
     .pipe(
       switchMap(() => this.getAllMateriasDocente()),
       switchMap(() => this.checkNotasExistencia()),
-      switchMap(() => this.getAllEstudiantesDocenteMateria()),
+      switchMap(existenNotas => existenNotas ? this.getAllEstudiantesDocenteMateria() : []),
       switchMap(() => this.getUltimoCorteMateria())
     )
     .subscribe({
       complete: () => {
+        if(this.dataSource.data.length === 0){
+          this.agregraNotas = true;
+        }
         this.spinner.hide();
       },
       error: (e) => {
@@ -242,9 +250,7 @@ export class InspeccionarNotasComponent {
   
   checkNotasExistencia() {
     return this.notaService.existenciaNotas(this.codigoDocente, this.codigoMateriaSelec).pipe(
-      map((v: RespuestaGeneral) => {
-        this.agregraNotas = Boolean(v.data)
-      }),
+      map((v: RespuestaGeneral) => v.data as Boolean),
       catchError(e => {
         console.error(e);
         return [false];
@@ -257,7 +263,6 @@ export class InspeccionarNotasComponent {
       tap((v: RespuestaGeneral) => {
         this.dataSource = new MatTableDataSource<Estudiante>(v.data as Estudiante[]);
         console.log(this.dataSource.data);
-        
       }),
       catchError(e => {
         console.error(e);
@@ -269,8 +274,14 @@ export class InspeccionarNotasComponent {
   getUltimoCorteMateria() {
     return this.notaService.ultimoCorteMateria(this.codigoMateriaSelec).pipe(
       tap((v: RespuestaGeneral) => {
-        this.selectCortes.setValue(String(v.data));
-        this.corteSelect = Number(v.data)
+        
+        if(v.data == null){
+          this.selectCortes.setValue(String(1));
+          this.corteSelect = Number(v.data)
+        }else{
+          this.selectCortes.setValue(String(v.data));
+          this.corteSelect = Number(v.data)
+        }
       }),
       catchError(e => {
         console.error(e);
@@ -304,7 +315,8 @@ export class InspeccionarNotasComponent {
           console.error(e);
         },
         complete: () => {
-          this.agregraNotas = true;
+          this.agregraNotas = false;
+          console.log(this.dataSource.data);
           this.spinner.hide();
         },
       });
@@ -357,7 +369,7 @@ export class InspeccionarNotasComponent {
         (resultado.isConfirmed || resultado.isDismissed) &&
         abrirAsignarNotas
       ) {
-        this.agregraNotas = abrirAsignarNotas;
+        this.agregraNotas = !abrirAsignarNotas;
       }
       if(pasarPantalla){
         this.route.navigate(['/docentes'])  

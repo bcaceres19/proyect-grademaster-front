@@ -66,6 +66,7 @@ export class DialogoComponent {
         complete: () => this.spinner.hide()
       })
     }else if(this.data.tipoVentana === "NOTAS_ESTUDIANTE"){
+      console.log(this.data.listData);
       this.transversalesService.allNotasMateriaDocente(String(this.data.listData[0]), String(this.data.listData[1]), String(this.data.data), String(this.data.listData[2])).subscribe({
         next:(v:RespuestaGeneral) =>{
           let nombre:string ="";
