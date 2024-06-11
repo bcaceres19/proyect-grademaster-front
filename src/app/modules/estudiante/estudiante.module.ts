@@ -8,6 +8,10 @@ import { BottomSheetComponent } from './components/bottom-sheet/bottom-sheet.com
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet'
 import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 @NgModule({
   declarations: [
     InicioEstudianteComponent,
@@ -19,6 +23,11 @@ import {MatListModule} from '@angular/material/list';
     MatTabsModule,
     MatTableModule,
     MatBottomSheetModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatSelectModule,
+    MatInputModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatListModule
   ]

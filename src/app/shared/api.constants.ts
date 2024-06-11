@@ -24,6 +24,7 @@ export class ApiHttpConstants{
     public static readonly MATERIAS = "/materias";
     public static readonly SEMESTRE = "/semestre";
     public static readonly NOTAS_DOCENTE = "/notasDocente";
+    public static readonly NOTAS = "/notas";
 
     //SERVICIO
     public static readonly UPLOAD_IMAGE = "/upload";
@@ -56,6 +57,8 @@ export class ApiHttpConstants{
     public static readonly ASIGNAR_MATERIAS_ESTUDIANTE = "/asignar-materias"
     public static readonly ULTIMO_CORTE_MATERIA = "/ultimo-corte-materia"
     public static readonly GENERAR_NUEVO_CORTE = "/generar-nuevo-corte"
-
+    public static readonly CORTES_ESTUDIANTE = "/cortes-estudiante";
+    public static readonly MATERIAS_ESTUDIANTE = "/materias-estudiante";
+    public static readonly NOTAS_CORTE = "/notas-corte";
 
 }

@@ -280,8 +280,6 @@ export class InspeccionarNotasComponent {
     
     if(this.corteSelect < this.selectCortes.value){
       this.generarMensajeCorte("¿Quieres generar otro corte? Si lo pasas el anterior corte sera inhabilitado", "info")
-    }else{
-
     }
 
   }

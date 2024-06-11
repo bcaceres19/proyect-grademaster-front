@@ -20,8 +20,18 @@ export class BottomSheetComponent {
     this.textoBotones = this.data.listData as string[];
   }
 
-  onEvent(event: MouseEvent): void {
-    this._bottomSheetRef.dismiss(true);
+  onEvent(event: MouseEvent, contenido:string): void {
+    switch(contenido){
+      case "Corte 1":
+        this._bottomSheetRef.dismiss('1');
+        break;
+      case 'Corte 2':
+        this._bottomSheetRef.dismiss('2');
+        break;
+      case 'Corte 3':
+        this._bottomSheetRef.dismiss('3');
+        break;
+    }
     event.preventDefault();
   }
 }
