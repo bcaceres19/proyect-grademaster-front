@@ -1,8 +1,8 @@
 <div class="d-flex flex-wrap">
   <div class="card text-center border border-2 m-2 flex-grow-1" style="width: 18rem; min-height: 25rem;">
-    <img [src]="urlImagen" class="card-img-top" style="height: 13rem;" alt="" *ngIf="urlImagen !== null" >
+    <img [src]="urlImagen" class="card-img-top img-fluid mx-auto" style="width: 12rem;height: 12rem;" alt="" *ngIf="urlImagen !== null">
     <div class="card-body d-flex flex-column">
-      <h2 class="card-title fs-4">{{nombre}}</h2>
+      <h2 class="card-title fs-6">{{nombre}}</h2>
       <p class="card-text fs-6"><b>Género:</b> {{genero}}</p>
       <p class="card-text fs-6"><b>Teléfono:</b> {{telefono}}</p>
       <p class="card-text fs-6"><b>Correo Universitario:</b> {{correoUniversitario}}</p>

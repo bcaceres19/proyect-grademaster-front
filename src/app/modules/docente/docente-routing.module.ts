@@ -6,11 +6,7 @@ import { InspeccionarNotasComponent } from './components/inspeccionar-notas/insp
 const routes: Routes = [
   {
     path: '',
-    component: InicioComponent
-  },
-  {
-    path: 'asignarNotas',
-    component:InspeccionarNotasComponent
+    component: InspeccionarNotasComponent
   }
 ];
 

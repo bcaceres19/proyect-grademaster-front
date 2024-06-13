@@ -11,6 +11,9 @@ import { NotasEstudiante } from '../../interface/notasEstudianteDto.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { NotasTablas } from '../../interface/notasTablas.interface';
 import { NotaMateria } from 'src/app/modules/docente/interface/notaMateria.interface';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
 
 @Component({
   selector: 'app-inicio-estudiante',
@@ -33,6 +36,7 @@ export class InicioEstudianteComponent {
 
   public materias:string[] = [];
 
+  public verNotasCortes:boolean = false
 
   public cortes:string[] = [
     'Corte 1',
@@ -47,6 +51,8 @@ export class InicioEstudianteComponent {
   public materiasAsignadas: MateriasHoras[] = [];
 
   public dataSource = new MatTableDataSource<NotasTablas>();
+
+  public mensajesError = MensajesErrorConstantes;
 
   public dataSourceNotas = new MatTableDataSource<any>();
 
@@ -63,10 +69,12 @@ export class InicioEstudianteComponent {
 
   constructor(
     private bottomSheet:MatBottomSheet,
-    private estudianteService:EstudianteService
+    private estudianteService:EstudianteService,
+    private spinner:NgxSpinnerService,
   ){}
 
   ngOnInit(): void {
+      this.spinner.show()
       this.codigoEstudiante = sessionStorage.getItem('codigo')!;
       this.estudianteService.getMateriasEstudiantes(this.codigoEstudiante).subscribe({
         next: (v:RespuestaGeneral) =>{ 
@@ -74,15 +82,19 @@ export class InicioEstudianteComponent {
         },
         error: (e) => {
           console.error(e);
+          this.generarMensaje(this.mensajesError.ERROR_GENERAL, "error")
+          this.spinner.hide()
         },
         complete: () => {
-          this.selectMaterias.setValue(this.materiasAsignadas[0].nombre)
+          this.selectMaterias.setValue(this.materiasAsignadas[0].codigo)
           this.notasCortes(this.materiasAsignadas[0].codigo)
+          this.spinner.hide()
         }
       })
   }
 
   public notasCortes(codigoMateria:string){
+    this.spinner.show()
     this.estudianteService.getCortesEstudiante(this.codigoEstudiante, codigoMateria).subscribe({
       next: (v:RespuestaGeneral) => {
         const notaSemestre: NotasSemestreDto = v.data as NotasSemestreDto
@@ -107,11 +119,13 @@ export class InicioEstudianteComponent {
       },
       error: (e) => {
         console.error(e);
+        this.generarMensaje(this.mensajesError.ERROR_GENERAL, "error")
+        this.spinner.hide()
       },
       complete: () => {
         this.cabeceras.push('Definitiva - 100%')
         this.cabecerasNotasImg.push(`Definitiva - 100%`)
-
+        this.spinner.hide()
       }
     })
   }
@@ -124,24 +138,54 @@ export class InicioEstudianteComponent {
     });
     this.bottomSheet._openedBottomSheetRef?.afterDismissed().subscribe((data) => {
       this.cabecerasNotas = []
-      this.estudianteService.getNotasCortes(Number(data),this.codigoEstudiante, this.selectMaterias.value).subscribe({
-        next:(v:RespuestaGeneral) => {
-          let index = 1;
-          let data:any = {}
-          const objeto:NotaMateria[] = v.data as NotaMateria[]
-          for(const nt of objeto){
-            let texto = `Nota ${index} - ${nt.codigoNotaEntityFk?.porcentajeNota}%`;
-            index++;
-            this.cabecerasNotas.push(texto)
-            data[texto] = nt.valorNota
+      let existeNota:boolean = true;
+      if(data == undefined){
+        this.verNotasCortes  = false;
+      }else{
+        this.spinner.show()
+        this.estudianteService.getNotasCortes(Number(data),this.codigoEstudiante, this.selectMaterias.value).subscribe({
+          next:(v:RespuestaGeneral) => {
+            let index = 1;
+            let data:any = {}
+            const objeto:NotaMateria[] = v.data as NotaMateria[]
+            if(objeto.length === 0){
+              this.generarMensaje(this.mensajesError.ERROR_NOTAS_CORTE,'error');
+              existeNota = false;
+            }else{
+              for(const nt of objeto){
+                let texto = `Nota ${index} - ${nt.codigoNotaEntityFk?.porcentajeNota}%`;
+                index++;
+                this.cabecerasNotas.push(texto)
+                data[texto] = nt.valorNota
+              }
+              this.dataSourceNotas = new MatTableDataSource<any>([data])
+            }
+          },
+          error: (e) =>{
+             console.error(e)
+             this.generarMensaje(this.mensajesError.ERROR_GENERAL, "error")
+             this.spinner.hide()
+            },
+          complete: () => {
+            if(existeNota){
+              this.verNotasCortes = true;
+            }else{
+              this.verNotasCortes = false;
+            }
+            this.spinner.hide()
           }
-          this.dataSourceNotas = new MatTableDataSource<any>([data])
-        },
-        error: (e) => console.error(e),
-        complete: () => {}
-      })
+        })
+      }
     })
   }
 
+  private generarMensaje(mensaje:string, icono:SweetAlertIcon){
+    Swal.fire({
+      text: mensaje,
+      icon: icono,
+      showCancelButton: false,
+      allowOutsideClick: false
+    });
+  }
 
 }

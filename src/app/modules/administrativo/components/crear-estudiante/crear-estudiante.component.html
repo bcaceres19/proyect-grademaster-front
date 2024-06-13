@@ -167,7 +167,7 @@
                 </div>
                 <div class="row justify-content-center mt-4">
                     <div class="col-md-2 text-center">
-                        <button mat-raised-button [disabled]="formCrearEstudiante.invalid">Registrar</button>
+                        <button mat-raised-button [disabled]="formCrearEstudiante.invalid || codigoEstudiante.trim().length === 0 || correoEstudiante.trim().length === 0">Registrar</button>
                     </div>
                     <div class="col-md-2 text-center">
                         <button mat-raised-button type="button" class="btn btn-secondary" (click)="volver()">Volver</button>

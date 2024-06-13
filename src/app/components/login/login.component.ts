@@ -6,10 +6,11 @@ import { Administrativo } from 'src/app/interface/administrativo.interface';
 import { Docente } from 'src/app/interface/docente.interface';
 import { Estudiante } from 'src/app/interface/estudiante.interface';
 import { Login } from 'src/app/interface/login.interface';
+import { RespuestaGeneral } from 'src/app/interface/respuesta-general.interface';
 import { LoginService } from 'src/app/services/login.service';
 import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
 import { UserRoles } from 'src/app/shared/user.enum';
-import Swal from 'sweetalert2';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -47,10 +48,10 @@ export class LoginComponent {
     if(codigoValue && cedulaValue){
       this.spinner.show();
       this.loginService.loginUsuario(codigoValue, cedulaValue).subscribe({
-        next: (v) => {
-          if(v.estado === 'OK'){
+        next: (v:RespuestaGeneral) => {
+          console.log(v);
+          if(v.data !== null){
             const login:Login = v.data as Login;
-            console.log(login.rol)
             switch(login.rol){
               case UserRoles.ESTUDIANTE:
                 const estudiante:Estudiante = login.data as Estudiante;
@@ -77,6 +78,8 @@ export class LoginComponent {
                 this.generarAlerta(MensajesErrorConstantes.ERROR_GENERAL);
                 break;
             }
+          }else{
+            this.generarMensaje(MensajesErrorConstantes.ERROR_LOGIN, "error")
           }
         },
         error: () => {
@@ -98,6 +101,15 @@ export class LoginComponent {
       icon:"error"
     })
   }
+
+  private generarMensaje(mensaje:string, icono:SweetAlertIcon){
+    Swal.fire({
+      text: mensaje,
+      icon: icono,
+      showCancelButton: false
+    })
+  }
+
 
   private crearSession(cedula:string, codigo:string, rol:string){
     sessionStorage.setItem('codigo', codigo);

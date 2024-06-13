@@ -27,9 +27,6 @@
         <div class="inicio" *ngIf="rol === 'ADMINISTRATIVO'">
           <a mat-button routerLink="crearMateria">Crear Materia</a>
         </div>
-        <div class="inicio" *ngIf="rol === 'DOCENTE'">
-          <a mat-button routerLink="asignarNotas">Asignar Notas</a>
-        </div>
         <div class="salir">
           <a mat-button (click)="onSalir()">Salir</a>
         </div>

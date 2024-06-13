@@ -44,7 +44,7 @@ export class CrearEstudianteComponent {
     'edad': new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(2)]),
     'telefono': new FormControl('', [Validators.required, Validators.maxLength(10)]),
     'correoPersonal': new FormControl('',  [Validators.required, Validators.email]),
-    'correoUniversitario': new FormControl(''),
+    'correoUniversitario': new FormControl('', [Validators.required,Validators.minLength(1)]),
     'genero': new FormControl('', Validators.required),
     'carrera': new FormControl('', Validators.required),
     'estado': new FormControl('', Validators.required),
@@ -230,7 +230,13 @@ export class CrearEstudianteComponent {
     this.spinner.show()
     this.estudianteService.generarCodigo(this.generarEstudiante()).subscribe({
       next: (v) => {
-        this.codigoEstudiante =  v.data + "";
+        const contenido:string = String(v.data);
+        if(contenido === 'ERROR'){
+          this.spinner.hide()
+          this.generarMensaje(this.mensajesError.ERROR_CODIGO_EXISTENTE, "error");
+        }else{
+          this.codigoEstudiante = v.data + "";
+        }
       },error: (e) => {
         console.log(e)
         this.spinner.hide()

@@ -1,9 +1,9 @@
-<div class="container mx-auto bg-gray">
+<div class="container bg-gray mt-5">
   <div class="row justify-content-center">
-    <div class="col">
+    <div class="col-12 text-center">
       <h1 class="titulo">Notas de materias</h1>
-      <form [formGroup]="formSelects" class="d-flex flex-row">
-        <mat-form-field appearance="fill">
+      <form [formGroup]="formSelects" class="d-flex justify-content-center">
+        <mat-form-field appearance="fill" class="w-50">
           <mat-label>Materias</mat-label>
           <mat-select formControlName="selectMaterias">
             <mat-option *ngFor="let materia of materiasAsignadas" [value]="materia.codigo" (click)="notasCortes(materia.codigo)">
@@ -13,63 +13,71 @@
         </mat-form-field>
       </form>
     </div>
-  </div>  
+  </div>
+
   <div class="row justify-content-center mt-3">
-    <div class="col">
-      <h2 class="titulo">Notas del corte 1</h2>
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 text-center">
+    <div class="col-12">
+      <h2 class="titulo text-center">Notas del corte 1</h2>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 text-center table table-striped">
         <ng-container matColumnDef="corteUno">
-          <th mat-header-cell *matHeaderCellDef> {{cabeceras[0]}} </th>
-          <td mat-cell  *matCellDef="let element"> {{element.corteUno}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabeceras[0]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.corteUno}} </td>
         </ng-container>
         <ng-container matColumnDef="corteDos">
-          <th mat-header-cell *matHeaderCellDef> {{cabeceras[1]}}  </th>
-          <td mat-cell *matCellDef="let element"> {{element.corteDos}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabeceras[1]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.corteDos}} </td>
         </ng-container>
         <ng-container matColumnDef="corteTres">
-          <th mat-header-cell *matHeaderCellDef> {{cabeceras[2]}} </th>
-          <td mat-cell *matCellDef="let element"> {{element.corteTres}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabeceras[2]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.corteTres}} </td>
         </ng-container>
         <ng-container matColumnDef="notaFinal">
-          <th mat-header-cell *matHeaderCellDef> {{cabeceras[3]}} </th>
-          <td mat-cell *matCellDef="let element"> {{element.notaFinal}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabeceras[3]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.notaFinal}} </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="nombreColumnas"></tr>
         <tr mat-row *matRowDef="let row; columns: nombreColumnas;"></tr>
       </table>
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 text-center">
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 text-center table table-striped mt-4">
         <ng-container matColumnDef="corteUno">
-          <th mat-header-cell *matHeaderCellDef> {{cabecerasNotasImg[0]}} </th>
-          <td mat-cell  *matCellDef="let element"> {{element.corteUnoImg}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabecerasNotasImg[0]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.corteUnoImg}} </td>
         </ng-container>
         <ng-container matColumnDef="corteDos">
-          <th mat-header-cell *matHeaderCellDef> {{cabecerasNotasImg[1]}}  </th>
-          <td mat-cell  *matCellDef="let element"> {{element.corteDosImg}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabecerasNotasImg[1]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.corteDosImg}} </td>
         </ng-container>
         <ng-container matColumnDef="corteTres">
-          <th mat-header-cell *matHeaderCellDef> {{cabecerasNotasImg[2]}} </th>
-          <td mat-cell  *matCellDef="let element"> {{element.corteTresImg}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabecerasNotasImg[2]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.corteTresImg}} </td>
         </ng-container>
         <ng-container matColumnDef="notaFinal">
-          <th mat-header-cell *matHeaderCellDef> {{cabecerasNotasImg[3]}} </th>
-          <td mat-cell *matCellDef="let element"> {{element.notaFinalImg}} </td>
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{cabecerasNotasImg[3]}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element.notaFinalImg}} </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="nombreColumnas"></tr>
         <tr mat-row *matRowDef="let row; columns: nombreColumnas;"></tr>
       </table>
     </div>
   </div>
+
   <div class="row justify-content-center mt-3">
-    <div class="col">
-      <button mat-raised-button (click)="openSheet()" class="btn btn-primary w-100">Ver Cortes</button>
+    <div class="col-12 text-center">
+      <button mat-raised-button (click)="openSheet()" class="btn btn-primary w-50">Ver Cortes</button>
     </div>
   </div>
-  <table mat-table [dataSource]="dataSourceNotas" class="mat-elevation-z8 text-center">
-    <ng-container *ngFor="let column of cabecerasNotas" [matColumnDef]="column">
-      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-      <td mat-cell  *matCellDef="let element"> {{element[column]}} </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="cabecerasNotas"></tr>
-    <tr mat-row *matRowDef="let row; columns: cabecerasNotas;"></tr>
-  </table>
+
+  <div class="row justify-content-center mt-3" *ngIf="verNotasCortes">
+    <div class="col-12">
+      <table mat-table [dataSource]="dataSourceNotas" class="mat-elevation-z8 text-center table table-striped">
+        <ng-container *ngFor="let column of cabecerasNotas" [matColumnDef]="column">
+          <th mat-header-cell *matHeaderCellDef class="text-center"> {{column}} </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> {{element[column]}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="cabecerasNotas"></tr>
+        <tr mat-row *matRowDef="let row; columns: cabecerasNotas;"></tr>
+      </table>
+    </div>
+  </div>
 </div>

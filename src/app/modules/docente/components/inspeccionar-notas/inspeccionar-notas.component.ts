@@ -19,6 +19,8 @@ import { Router } from '@angular/router';
 import { MateriasHoras } from '../../interface/materiasHoras.interface';
 import { catchError, map, switchMap, tap } from 'rxjs';
 import { GenerarNuevoCorte } from '../../interface/generarNuevoCorte.interface';
+import { MensajesOk } from 'src/app/shared/mensajesOk.constants';
+import { MensajesErrorConstantes } from 'src/app/shared/mensajesError.constants';
 
 @Component({
   selector: 'app-inspeccionar-notas',
@@ -44,6 +46,8 @@ export class InspeccionarNotasComponent {
 
   public horaFin:string = '';
 
+  public porcentajeNotas:number = 0.0
+
   public corteSelect:number = 0;
 
   public nombreColumnas: string[] = [
@@ -52,6 +56,8 @@ export class InspeccionarNotasComponent {
     'apellidos',
     'acciones',
   ];
+
+  public valores:number[] = []
 
   public nombreColumnasCrearNotas: string[] = [
     'codigo',
@@ -88,6 +94,8 @@ export class InspeccionarNotasComponent {
     '3'
   ]
 
+  procentajes:any = {}
+
   constructor(
     private docenteService: DocenteService,
     private notaService: NotaService,
@@ -117,12 +125,25 @@ export class InspeccionarNotasComponent {
         notasVacias.push({
           indice: notasVacias.length,
         });
-        this.dataSourceCrearNotas = new MatTableDataSource<Notas>(
-          notasVacias as Notas[]
-        );
+        this.dataSourceCrearNotas = new MatTableDataSource<Notas>(notasVacias as Notas[]);
         this.spinner.hide();
       },
     });
+  }
+
+  public calcularPorcentaje(elemento:any){
+    if(this.valores[elemento.indice] !== undefined){
+      console.log(this.valores);
+            
+      this.valores[elemento.indice] = Number(this.notas.controls[elemento.indice].value.porcentaje)
+    }else{
+      this.valores.push(Number(this.notas.controls[elemento.indice].value.porcentaje));
+    }
+    let suma = 0;
+    for(const valor of this.valores){
+       suma+= valor
+    }
+    this.porcentajeNotas = suma;
   }
 
   public eliminarNota(indice: number) {
@@ -166,19 +187,24 @@ export class InspeccionarNotasComponent {
       next: (v) => {},
       error: (e) => {
         console.error(e);
+        this.generarMensaje(MensajesErrorConstantes.ERROR_GENERAL, "error", false, false)
         this.spinner.hide();
       },
       complete: () => {
         this.generarMensaje(
           'Se agregaron las notas de la materia correctamente',
           'success',
-          true,false
+          false,false
         );
         this.getUltimoCorteMateria().subscribe({
           complete:() => {
             this.getAllEstudiantesMateria();
           },
-          error:(e) => {}
+          error:(e) => {
+            console.error(e);
+            this.spinner.hide()
+            this.generarMensaje(MensajesErrorConstantes.ERROR_GENERAL, "error", false, false)
+          }
         })
       },
     });
@@ -202,13 +228,14 @@ export class InspeccionarNotasComponent {
     .subscribe({
       complete: () => {
         if(this.dataSource.data.length === 0){
-          this.agregraNotas = true;
+          this.generarMensaje(MensajesOk.MENSAJE_INFORMACION_NO_EXISTEN_NOTAS, "info",true,false);
         }
         this.spinner.hide();
       },
       error: (e) => {
         console.error(e);
         this.spinner.hide();
+        this.generarMensaje(MensajesErrorConstantes.ERROR_GENERAL, "error", false, false)
       }
     });
   }
@@ -238,7 +265,7 @@ export class InspeccionarNotasComponent {
           this.horaFin = String(materiaSelec.horaFin);
         } else {
           this.spinner.hide();
-          this.generarMensaje('El docente no tiene materias para notas, espera al que el administrador te coloque una materia', "info", false, true);
+          this.generarMensaje(MensajesErrorConstantes.ERROR_NO_EXISTEN_MATERIAS, "error", false, true);
         }
       }),
       catchError(e => {
@@ -293,7 +320,7 @@ export class InspeccionarNotasComponent {
   public seleccionarCorte(){
     
     if(this.corteSelect < this.selectCortes.value){
-      this.generarMensajeCorte("¿Quieres generar otro corte? Si lo pasas el anterior corte sera inhabilitado", "info")
+      this.generarMensajeCorte(MensajesOk.MENSAJE_NUEVO_CORTE, "info")
     }
 
   }
@@ -313,10 +340,11 @@ export class InspeccionarNotasComponent {
         },
         error: (e) => {
           console.error(e);
+          this.spinner.hide()
+          this.generarMensaje(MensajesErrorConstantes.ERROR_GENERAL, "error", false, false)
         },
         complete: () => {
           this.agregraNotas = false;
-          console.log(this.dataSource.data);
           this.spinner.hide();
         },
       });
@@ -343,6 +371,7 @@ export class InspeccionarNotasComponent {
           error: (e) => {
             console.error(e);
             this.spinner.hide()
+            this.generarMensaje(MensajesErrorConstantes.ERROR_GENERAL, "error", false, false)
           },
           complete: () => {
             this.spinner.hide()
@@ -365,11 +394,9 @@ export class InspeccionarNotasComponent {
       icon: icono,
       showCancelButton: false,
     }).then((resultado) => {
-      if (
-        (resultado.isConfirmed || resultado.isDismissed) &&
-        abrirAsignarNotas
-      ) {
-        this.agregraNotas = !abrirAsignarNotas;
+      if (resultado.isConfirmed || resultado.isDismissed) {
+        console.log("asd" + abrirAsignarNotas);
+        this.agregraNotas = abrirAsignarNotas;
       }
       if(pasarPantalla){
         this.route.navigate(['/docentes'])  
@@ -416,6 +443,7 @@ export class InspeccionarNotasComponent {
             error: (e) => {
               console.error(e);
               this.spinner.hide();
+              this.generarMensaje(MensajesErrorConstantes.ERROR_GENERAL, "error", false, false)
             },
             complete: () => {
               this.generarMensaje(

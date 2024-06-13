@@ -36,7 +36,7 @@ export class CrearDocenteComponent {
     'edad': new FormControl('',[ Validators.required, Validators.minLength(1), Validators.maxLength(2)]),
     'telefono': new FormControl('', [Validators.required, Validators.maxLength(10)]),
     'correoPersonal': new FormControl('', [Validators.required, Validators.email]),
-    'correoDocente': new FormControl('', Validators.required),
+    'correoDocente': new FormControl('', [Validators.required, Validators.minLength(1)]),
     'genero': new FormControl('', Validators.required),
     'estado': new FormControl('', Validators.required),
     'cedula': new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]),
